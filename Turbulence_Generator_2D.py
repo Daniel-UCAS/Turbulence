@@ -42,9 +42,9 @@ def movingaverage(interval, window_size):
     return convolve(interval, window, 'same')
 
 #------------------------------------------------------------------------------
-
-def compute_tke_spectrum_1d(u,lx,ly,lz,smooth):
-  """
+"""
+#def compute_tke_spectrum_1d(u,lx,ly,lz,smooth):
+  
   Given a velocity field u this function computes the kinetic energy
   spectrum of that velocity field in spectral space. This procedure consists of the 
   following steps:
@@ -72,7 +72,7 @@ def compute_tke_spectrum_1d(u,lx,ly,lz,smooth):
     The domain size in the z-direction.
   smooth: boolean
     A boolean to smooth the computed spectrum for nice visualization.
-  """
+  
   nx = len(u[:,0,0])
   ny = len(u[0,:,0])
   nz = len(u[0,0,:])
@@ -123,7 +123,7 @@ def compute_tke_spectrum_1d(u,lx,ly,lz,smooth):
   knyquist = knorm*min(nx,ny,nz)/2 
 
   return knyquist, wave_numbers, tke_spectrum
-
+"""
 #------------------------------------------------------------------------------
 
 def passot_pouquet_spectrum(k):
@@ -162,10 +162,7 @@ def generate_isotropic_turbulence(lx,ly,lz,nx,ny,nz,nmodes,wn1,especf):
   espec: functor
     A callback function representing the energy spectrum.
   """
-  uk = zeros([nx,ny,nz])
-  for j in range(0,nh)
-
-  # generate cell centered x-grid
+    # generate cell centered x-grid
   dx = float(lx/nx)
   dy = float(ly/ny)  
   dz = float(lz/nz)
@@ -187,6 +184,7 @@ def generate_isotropic_turbulence(lx,ly,lz,nx,ny,nz,nmodes,wn1,especf):
   # wavenumber at cell centers
   wn = wn1 + 0.5*dk + arange(0,nmodes)*dk
 
+  print(wn)
   dkn = ones(nmodes)*dk
   
   #   wavenumber vector from random angles
