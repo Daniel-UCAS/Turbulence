@@ -42,93 +42,93 @@ def movingaverage(interval, window_size):
     return convolve(interval, window, 'same')
 
 #------------------------------------------------------------------------------
-"""
-#def compute_tke_spectrum_1d(u,lx,ly,lz,smooth):
-  
-  Given a velocity field u this function computes the kinetic energy
-  spectrum of that velocity field in spectral space. This procedure consists of the 
-  following steps:
-  1. Compute the spectral representation of u using a fast Fourier transform.
-  This returns uf (the f stands for Fourier)
-  2. Compute the point-wise kinetic energy Ef (kx, ky, kz) = 1/2 * (uf)* conjugate(uf)
-  3. For every wave number triplet (kx, ky, kz) we have a corresponding spectral kinetic energy 
-  Ef(kx, ky, kz). To extract a one dimensional spectrum, E(k), we integrate Ef(kx,ky,kz) over
-  the surface of a sphere of radius k = sqrt(kx^2 + ky^2 + kz^2). In other words
-  E(k) = sum( E(kx,ky,kz), for all (kx,ky,kz) such that k = sqrt(kx^2 + ky^2 + kz^2) ).
 
-  Parameters:
-  -----------  
-  u: 3D array
-    The x-velocity component.
-  v: 3D array
-    The y-velocity component.
-  w: 3D array
-    The z-velocity component.    
-  lx: float
-    The domain size in the x-direction.
-  ly: float
-    The domain size in the y-direction.
-  lz: float
-    The domain size in the z-direction.
-  smooth: boolean
-    A boolean to smooth the computed spectrum for nice visualization.
-  
-  nx = len(u[:,0,0])
-  ny = len(u[0,:,0])
-  nz = len(u[0,0,:])
-  
-  nt= nx*ny*nz
-  n = max(nx,ny,nz) #int(np.round(np.power(nt,1.0/3.0)))
-  
-  uh = fftn(u)/nt
-  
-  tkeh = zeros((nx,ny,nz))
-  tkeh = 0.5*(uh*conj(uh)).real
-  
+def compute_tke_spectrum_1d(u, lx, ly, lz, smooth):
+    """
+    Given a velocity field u this function computes the kinetic energy
+    spectrum of that velocity field in spectral space. This procedure consists of the
+    following steps:
+    1. Compute the spectral representation of u using a fast Fourier transform.
+    This returns uf (the f stands for Fourier)
+    2. Compute the point-wise kinetic energy Ef (kx, ky, kz) = 1/2 * (uf)* conjugate(uf)
+    3. For every wave number triplet (kx, ky, kz) we have a corresponding spectral kinetic energy
+    Ef(kx, ky, kz). To extract a one dimensional spectrum, E(k), we integrate Ef(kx,ky,kz) over
+    the surface of a sphere of radius k = sqrt(kx^2 + ky^2 + kz^2). In other words
+    E(k) = sum( E(kx,ky,kz), for all (kx,ky,kz) such that k = sqrt(kx^2 + ky^2 + kz^2) ).
+    Parameters:
+    -----------
+    u: 3D array
+      The x-velocity component.
+    v: 3D array
+      The y-velocity component.
+    w: 3D array
+      The z-velocity component.
+    lx: float
+      The domain size in the x-direction.
+    ly: float
+      The domain size in the y-direction.
+    lz: float
+      The domain size in the z-direction.
+    smooth: boolean
+      A boolean to smooth the computed spectrum for nice visualization.
+    """
+    nx = len(u[:, 0, 0])
+    ny = len(u[0, :, 0])
+    nz = len(u[0, 0, :])
 
-  l = max(lx,ly,lz)  
-  
-  knorm = 2.0*pi/l
-  
-  kxmax = nx/2
-  kymax = ny/2
-  kzmax = nz/2
-  
-  wave_numbers = knorm*arange(0,n)
-  
-  tke_spectrum = zeros(len(wave_numbers))
-  
-  for kx in xrange(nx):
-    rkx = kx
-    if (kx > kxmax):
-      rkx = rkx - (nx)
-    for ky in xrange(ny):
-      rky = ky
-      if (ky>kymax):
-        rky=rky - (ny)
-      for kz in xrange(nz):        
-        rkz = kz
-        if (kz>kzmax):
-          rkz = rkz - (nz)
-        rk = sqrt(rkx*rkx + rky*rky + rkz*rkz)
-        k = int(np.round(rk))
-        tke_spectrum[k] = tke_spectrum[k] + tkeh[kx,ky,kz]
+    nt = nx * ny * nz
+    n = max(nx, ny, nz)  # int(np.round(np.power(nt,1.0/3.0)))
 
-  tke_spectrum = tke_spectrum/knorm
-  if smooth:
-    tkespecsmooth = movingaverage(tke_spectrum, 5) #smooth the spectrum
-    tkespecsmooth[0:4] = tke_spectrum[0:4] # get the first 4 values from the original data
-    tke_spectrum = tkespecsmooth
+    uh = fftn(u) / nt
 
-  knyquist = knorm*min(nx,ny,nz)/2 
+    # tkeh = zeros((nx, ny, nz))
+    tkeh = 0.5 * (uh * conj(uh)).real
 
-  return knyquist, wave_numbers, tke_spectrum
-"""
+    length = max(lx, ly, lz)
+
+    knorm = 2.0 * pi / length
+
+    kxmax = nx / 2
+    kymax = ny / 2
+    kzmax = nz / 2
+
+    wave_numbers = knorm * arange(0, n)
+    tke_spectrum = zeros(len(wave_numbers))
+
+    for kx in range(nx):
+        rkx = kx
+        if kx > kxmax:
+            rkx = rkx - nx
+        for ky in range(ny):
+            rky = ky
+            if ky > kymax:
+                rky = rky - ny
+            for kz in range(nz):
+                rkz = kz
+                if kz > kzmax:
+                    rkz = rkz - nz
+                rk = sqrt(rkx * rkx + rky * rky + rkz * rkz)
+                k = int(np.round(rk))
+                #print('k = ', k)
+                tke_spectrum[k] = tke_spectrum[k] + tkeh[kx, ky, kz]
+
+    tke_spectrum = tke_spectrum / knorm
+
+    if smooth:
+        tkespecsmooth = movingaverage(tke_spectrum, 5)  # smooth the spectrum
+        tkespecsmooth[0:4] = tke_spectrum[0:4]  # get the first 4 values from the original data
+        tke_spectrum = tkespecsmooth
+
+    knyquist = knorm * min(nx, ny, nz) / 2
+
+    return knyquist, wave_numbers, tke_spectrum
+
+
 #------------------------------------------------------------------------------
 
-def passot_pouquet_spectrum(k):
+def passot_pouquet_spectrum(k,l):
     up = 0.5
-    l11 = 0.3
+    l11 = l/3
     ke = np.sqrt(2*np.pi)/l11    
     print('Ke = %.4f' % ke)
     C = np.sqrt(2/np.pi)*np.power(up,2.0)/ke*32.0/3.0
@@ -174,18 +174,20 @@ def generate_isotropic_turbulence(lx,ly,lz,nx,ny,nz,nmodes,wn1,especf):
   theta = np.arccos(2.0*nu -1.0);
   psi   = np.random.uniform(-pi/2.0,pi/2.0,nmodes);
   
+  
   # highest wave number that can be represented on this grid (nyquist limit)
-  wnn = max(np.pi/dx, max(np.pi/dy, np.pi/dz));
+  wnn = max(np.pi/dx, np.pi/dy, np.pi/dz)
   print( 'I will generate data up to wave number: ', wnn)
   
   # wavenumber step
   dk = (wnn-wn1)/nmodes
-  
+  print(dk)
   # wavenumber at cell centers
   wn = wn1 + 0.5*dk + arange(0,nmodes)*dk
 
-  print(wn)
   dkn = ones(nmodes)*dk
+ 
+ 
   
   #   wavenumber vector from random angles
   kx = sin(theta)*cos(phi)*wn
@@ -218,8 +220,8 @@ def generate_isotropic_turbulence(lx,ly,lz,nx,ny,nz,nmodes,wn1,especf):
   
   # get the modes   
   km = wn
-  
-  espec = especf(km)
+  #quit()
+  espec = especf(km, lx)
   espec = espec.clip(0.0)
   E_ = espec
   
@@ -228,7 +230,6 @@ def generate_isotropic_turbulence(lx,ly,lz,nx,ny,nz,nmodes,wn1,especf):
   u_ = zeros([nx,ny,nz])
   v_ = zeros([nx,ny,nz])
   w_ = zeros([nx,ny,nz])
-  
 
   xc = dx/2.0 + arange(0,nx)*dx  
   yc = dy/2.0 + arange(0,ny)*dy  
@@ -236,27 +237,37 @@ def generate_isotropic_turbulence(lx,ly,lz,nx,ny,nz,nmodes,wn1,especf):
    
   for k in range(0,nz):
     for j in range(0,ny):
+      u_[0,j,k] = 1
       for i in range(0,nx):
         #for every grid point (i,j,k) do the fourier summation 
         arg = kx*xc[i] + ky*yc[j] + kz*zc[k] - psi
         bmx = 2.0*um*cos(arg - kx*dx/2.0)
         bmy = 2.0*um*cos(arg - ky*dy/2.0)        
         bmz = 2.0*um*cos(arg - kz*dz/2.0)                
-        u_[i,j,k] = np.sum(bmx*sxm)
+        #u_[i,j,k] = 1+k#np.sum(bmx*sxm)
+        #print(np.sum(bmx*sxm))
+        #quit()
         v_[i,j,k] = np.sum(bmy*sym)
         w_[i,j,k] = np.sum(bmz*szm)
   
         
   print ('done. I am awesome!')
+  #print(u_)
+  #quit()
   return u_, v_, w_, E_, km
 
-U, V, W, E, K = generate_isotropic_turbulence(1,1,1,5,5,5,1000,2*18e-6,passot_pouquet_spectrum)
+U, V, W, E, K = generate_isotropic_turbulence(1.13,0.565,0.565,64,32,32,1000,2*18e-6,passot_pouquet_spectrum)
+##NQ, KQ, EQ = compute_tke_spectrum_1d(U,1.13,0.565,0.565,True)
+##plt.clf()
+##plt.plot(KQ, EQ)
+##plt.show()
 with open('U.bin', 'wb') as f:
-    f.write(V)
+    f.write(U)
 
+#kn, k, Ek = compute_tke_spectrum_1d(U,21.582,0.565,0.565,True)
 ##kn, k, Ek = compute_tke_spectrum_1d(U,0.002682,0.002682,0.002682,'false')
 ##print(len(k), len(Ek))
-##plt.clf()
-##plt.plot(k,Ek,'blue')
+#plt.clf()
+#plt.plot(k,Ek,'blue')
 ##plt.plot(K,E,'green')
-##plt.show()
+#plt.show()
