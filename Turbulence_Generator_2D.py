@@ -234,17 +234,19 @@ def generate_isotropic_turbulence(lx,ly,lz,nx,ny,nz,nmodes,wn1,especf):
   xc = dx/2.0 + arange(0,nx)*dx  
   yc = dy/2.0 + arange(0,ny)*dy  
   zc = dz/2.0 + arange(0,nz)*dz
-   
-  for k in range(0,nz):
+  """When writing the BOV file, the first number should be nz instead of nx
+     the second value should be ny, and the third variable should be nx instead of nz
+  """   
+  for i in range(0,nx):
     for j in range(0,ny):
-      u_[0,j,k] = 1
-      for i in range(0,nx):
+      #u_[0,j,k] = 1
+      for k in range(0,nz):
         #for every grid point (i,j,k) do the fourier summation 
         arg = kx*xc[i] + ky*yc[j] + kz*zc[k] - psi
         bmx = 2.0*um*cos(arg - kx*dx/2.0)
         bmy = 2.0*um*cos(arg - ky*dy/2.0)        
         bmz = 2.0*um*cos(arg - kz*dz/2.0)                
-        #u_[i,j,k] = 1+k#np.sum(bmx*sxm)
+        u_[i,j,k] = np.sum(bmx*sxm)
         #print(np.sum(bmx*sxm))
         #quit()
         v_[i,j,k] = np.sum(bmy*sym)
@@ -256,7 +258,7 @@ def generate_isotropic_turbulence(lx,ly,lz,nx,ny,nz,nmodes,wn1,especf):
   #quit()
   return u_, v_, w_, E_, km
 
-U, V, W, E, K = generate_isotropic_turbulence(1.13,0.565,0.565,64,32,32,1000,2*18e-6,passot_pouquet_spectrum)
+U, V, W, E, K = generate_isotropic_turbulence(1.695,1.13,0.565,64,32,16,1000,2*18e-6,passot_pouquet_spectrum)
 ##NQ, KQ, EQ = compute_tke_spectrum_1d(U,1.13,0.565,0.565,True)
 ##plt.clf()
 ##plt.plot(KQ, EQ)
