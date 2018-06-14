@@ -1,5 +1,5 @@
 """
-    File name: Turbulence_3D.py
+    File name: Turbulence_2D.py
     Author: Marvin Joshi
     Date created: 06/07/2018
     Python Version: 3.6
@@ -118,7 +118,7 @@ def passot_pouquet_spectrum(k,lmin):
     l11 = lmin/3
     ke = np.sqrt(2*pi)/l11    
     #print('Ke = %.4f' % ke)
-    C = np.sqrt(2/pi)*np.power(up,2.0)/ke*16.0
+    C = np.sqrt(2/pi)*np.power(up,2.0)/ke*32.0/3.0
     E = C*np.power(k/ke,4.0)*np.exp(-2.0*np.power(k/ke,2.0))
     return E,up,ke
 
@@ -154,7 +154,7 @@ def turbulence_3d(xmin, xmax, ymin, ymax, zmin, zmax, nx, ny, nz):
     q1 = np.zeros([nx, ny, nz], dtype = complex)
     q = np.zeros([nx, ny, nz], dtype = complex)
     X_FFT = np.zeros([nx, ny, nz], dtype = complex)
-    delta = np.max(((xmax-xmin)/(nx)) and ((ymax-ymin)/(ny)) and ((zmax-zmin)/(nz)))
+    delta = np.max(((xmax-xmin)/(nx)) and ((ymax-ymin)/(ny)))
     kc = pi/delta
 
     #determine the amplitude for the passot-poquet spectrum   
@@ -197,7 +197,7 @@ def turbulence_3d(xmin, xmax, ymin, ymax, zmin, zmax, nx, ny, nz):
                 #Checks to see that the wave numvers are not larger than the cutoff
                 if (kmag > kc):
                     continue
-                e_spec, up, ke = passot_pouquet_spectrum(kmag, min(xmax, ymax, zmax))
+                e_spec, up, ke = passot_pouquet_spectrum(kmag, min(xmax, ymax))
                 ak = amp*sqrt(e_spec/(2.0*pi*kmag**2))*np.exp(i_cmplx*ps1)*cos(psr)
                 bk = amp*sqrt(e_spec/(2.0*pi*kmag**2))*np.exp(i_cmplx*ps2)*sin(psr)
                 #Calculates the turbulence values
@@ -285,7 +285,7 @@ def conjugate_yzplane(f,nx,ny,nz):
         f[j,0] = conj(f[ny-j,0])
 
 #------------------------------------------------------------------------------
-U = turbulence_3d(0, 1.13, 0, 0.565, 0, 0.565, 32, 16, 16)
+U = turbulence_3d(0, 1.13, 0, 0.565, 0, 1, 512, 256, 1)
 #NQ, KQ, EQ = compute_tke_spectrum_1d(U,1.13,1.13,0.565,False)
 #plt.clf()
 #plt.plot(KQ, EQ)
