@@ -27,7 +27,7 @@ def passot_pouquet_spectrum(k,lmin):
     l11 = lmin/3
     ke = np.sqrt(2*np.pi)/l11    
     #print('Ke = %.4f' % ke)
-    C = np.sqrt(2/np.pi)*np.power(up,2.0)/ke*32.0/3.0
+    C = np.sqrt(2/np.pi)*np.power(up,2.0)/ke*16.0
     E = C*np.power(k/ke,4.0)*np.exp(-2.0*np.power(k/ke,2.0))
     return E, up, ke
 #------------------------------------------------------------------------------
