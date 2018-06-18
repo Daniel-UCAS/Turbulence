@@ -21,6 +21,7 @@ from numpy import sin, cos, sqrt, ones, zeros, pi, arange, conj, convolve
 from numpy.fft import fft, fftn
 import matplotlib.pyplot as plt
 import csv
+import time
 
 #------------------------------------------------------------------------------
 
@@ -124,7 +125,7 @@ def passot_pouquet_spectrum(k,lmin):
 
 #------------------------------------------------------------------------------
 
-def turbulence_3d(xmin, xmax, ymin, ymax, zmin, zmax, nx, ny, nz):
+def turb_2d(xmin, xmax, ymin, ymax, zmin, zmax, nx, ny, nz):
     """
     Parameters:
     -----------    
@@ -285,7 +286,10 @@ def conjugate_yzplane(f,nx,ny,nz):
         f[j,0] = conj(f[ny-j,0])
 
 #------------------------------------------------------------------------------
-U = turbulence_3d(0, 1.13, 0, 0.565, 0, 1, 512, 256, 1)
+start = time.time()
+U = turb_2d(0, 1.13, 0, 0.565, 0, 1, 64, 32, 1)
+end = time.time()
+print("Time:", end-start, "seconds")
 #NQ, KQ, EQ = compute_tke_spectrum_1d(U,1.13,1.13,0.565,False)
 #plt.clf()
 #plt.plot(KQ, EQ)

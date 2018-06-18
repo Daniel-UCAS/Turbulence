@@ -21,6 +21,7 @@ from numpy import sin, cos, sqrt, ones, zeros, pi, arange, conj, convolve
 import matplotlib.pyplot as plt
 from numpy.fft import fftn
 import csv
+import time
 #------------------------------------------------------------------------------
 def passot_pouquet_spectrum(k,lmin):
     up = 0.5
@@ -177,5 +178,8 @@ def conjugate_yzplane(f,nx,ny,nz):
         f[j,0] = conj(f[ny-j,0])
 
 
-
-turb_3d( 0, 1.13, 0, 0.565, 0, 0.565, 32, 16, 16)
+#------------------------------------------------------------------------------
+start = time.time()
+U = turb_3d(0, 1.13, 0, 0.565, 0, 0.565, 32, 16, 16)
+end = time.time()
+print("Time:", end-start, "seconds")
